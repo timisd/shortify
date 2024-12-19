@@ -4,10 +4,10 @@ namespace Shortify.Common.Models;
 
 public class User : Entity
 {
-    string Email { get; set; }
-    string PasswordHash { get; set; }
-    bool IsAdmin { get; set; }
-    
+    public string Email { get; set; }
+    public string PasswordHash { get; set; }
+    public bool IsAdmin { get; set; }
+
     public List<Claim> ToClaims()
     {
         return

@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.API", "Shortify.AP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.Common", "Shortify.Common\Shortify.Common.csproj", "{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.Persistence", "Shortify.Persistence\Shortify.Persistence.csproj", "{6C76808D-0F54-4399-A117-E3D14AB3E8D0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.Persistence.EfCore", "Shortify.Persistence.EfCore\Shortify.Persistence.EfCore.csproj", "{25D63E9B-C929-4630-8EB3-D08AA5118803}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C76808D-0F54-4399-A117-E3D14AB3E8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C76808D-0F54-4399-A117-E3D14AB3E8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C76808D-0F54-4399-A117-E3D14AB3E8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C76808D-0F54-4399-A117-E3D14AB3E8D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

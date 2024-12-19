@@ -10,7 +10,17 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
-        <PackageReference Include="Scalar.AspNetCore" Version="1.2.64" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Scalar.AspNetCore" Version="1.2.64"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Shortify.Common\Shortify.Common.csproj"/>
+        <ProjectReference Include="..\Shortify.Persistence.EfCore\Shortify.Persistence.EfCore.csproj"/>
+        <ProjectReference Include="..\Shortify.Persistence\Shortify.Persistence.csproj"/>
     </ItemGroup>
 
 </Project>

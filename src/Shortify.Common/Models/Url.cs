@@ -2,9 +2,9 @@ namespace Shortify.Common.Models;
 
 public class Url : Entity
 {
-    string OriginalLink { get; set; }
-    string ShortLink { get; set; }
-    int Visits { get; set; }
-    DateTime CreatedAt { get; set; }
-    Guid? UserId { get; set; }
+    public string OriginalLink { get; set; }
+    public string ShortLink { get; set; }
+    public int Visits { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public Guid? UserId { get; set; }
 }

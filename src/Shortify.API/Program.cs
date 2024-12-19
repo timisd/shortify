@@ -1,8 +1,12 @@
 using Scalar.AspNetCore;
+using Shortify.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
+
+builder.Services.AddSettings(builder.Configuration);
+builder.Services.AddRepositories();
 
 var app = builder.Build();
 
