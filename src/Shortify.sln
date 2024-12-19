@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.API", "Shortify.API\Shortify.API.csproj", "{E9E5AB2C-5817-45D1-BE8A-C9148A4D7A76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.Common", "Shortify.Common\Shortify.Common.csproj", "{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{E9E5AB2C-5817-45D1-BE8A-C9148A4D7A76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E9E5AB2C-5817-45D1-BE8A-C9148A4D7A76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E9E5AB2C-5817-45D1-BE8A-C9148A4D7A76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{041C2290-5FE2-4E58-9FFD-CAE8B53FF078}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
