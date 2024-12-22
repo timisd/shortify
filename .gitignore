@@ -110,3 +110,6 @@ yarn-error.log
 
 # Mac
 .DS_Store
+
+# appsettings exclude
+*appsettings.Development.json

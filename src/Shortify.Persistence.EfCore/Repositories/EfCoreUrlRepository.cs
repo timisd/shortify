@@ -1,32 +1,88 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Shortify.Common.Models;
 using Shortify.Persistence.Models;
 
 namespace Shortify.Persistence.EfCore.Repositories;
 
-public class EfCoreUrlRepository : IUrlRepository
+public class EfCoreUrlRepository(ILogger<EfCoreUrlRepository> logger, AppDbContext dbContext) : IUrlRepository
 {
-    public Task<Url> AddUrlAsync(Url url, CancellationToken ct = default)
+    public async Task<Url?> AddUrlAsync(Url url, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            dbContext.Urls.Add(url);
+            await dbContext.SaveChangesAsync(ct);
+            return url;
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Error adding url");
+            return null;
+        }
     }
 
-    public Task<Url> DeleteUrlAsync(Guid id, CancellationToken ct = default)
+    public async Task<Url?> DeleteUrlAsync(Guid id, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var url = await dbContext.Urls.FirstOrDefaultAsync(url => url.Id == id, ct);
+            if (url == null) return url;
+
+            dbContext.Urls.Remove(url);
+            await dbContext.SaveChangesAsync(ct);
+            return url;
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Error deleting url");
+            return null;
+        }
     }
 
-    public Task<Url> GetUrlAsync(Guid id, CancellationToken ct = default)
+    public async Task<Url?> GetUrlAsync(Guid id, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await dbContext.Urls.FirstOrDefaultAsync(url => url.Id == id, ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Could not get Url");
+            return null;
+        }
     }
 
-    public Task<Url> GetUrlByShortLinkAsync(string shortLink, CancellationToken ct = default)
+    public async Task<Url?> GetUrlByShortLinkAsync(string shortLink, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await dbContext.Urls.FirstOrDefaultAsync(url => url.ShortLink == shortLink, ct);
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Could not get Url");
+            return null;
+        }
     }
 
-    public Task<PagedResult<Url>> GetUrlsAsync(Filter filter, CancellationToken ct = default)
+    public async Task<PagedResult<Url>> GetUrlsAsync(Filter filter, CancellationToken ct = default)
     {
-        throw new NotImplementedException();
+        var query = QueryHelper.ApplyFilter(dbContext.Urls.AsQueryable(), filter);
+
+        var totalItems = await query.CountAsync(ct);
+        var totalPages = (int)Math.Ceiling(totalItems / (double)filter.ItemsPerPage);
+        var items = await query
+            .Skip((filter.StartPage - 1) * filter.ItemsPerPage)
+            .Take(filter.ItemsPerPage)
+            .ToListAsync(ct);
+
+        return new PagedResult<Url>
+        {
+            Items = items,
+            TotalItems = totalItems,
+            CurrentPage = filter.StartPage,
+            TotalPages = totalPages
+        };
     }
 }

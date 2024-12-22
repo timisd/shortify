@@ -18,8 +18,9 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddSingleton<DbConnectionFactory>();
-        services.AddSingleton<IUrlRepository, EfCoreUrlRepository>();
-        services.AddSingleton<IUserRepository, EfCoreUserRepository>();
+        services.AddDbContext<AppDbContext>();
+        services.AddScoped<IUrlRepository, EfCoreUrlRepository>();
+        services.AddScoped<IUserRepository, EfCoreUserRepository>();
 
         return services;
     }

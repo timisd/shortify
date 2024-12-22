@@ -1,0 +1,18 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "GeneralSettings": {
+    "EncryptionKey": "custom_encryption_key",
+  },
+  "DatabaseSettings": {
+    "Host": "ip_of_database",
+    "Port": port,
+    "Database": "database_name",
+    "Username": "database_username",
+    "Password": "database_user_password"
+  }
+}

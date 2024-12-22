@@ -1,3 +1,4 @@
+using FastEndpoints;
 using Scalar.AspNetCore;
 using Shortify.API.Extensions;
 
@@ -7,6 +8,8 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSettings(builder.Configuration);
 builder.Services.AddRepositories();
+
+builder.Services.AddFastEndpoints();
 
 var app = builder.Build();
 
@@ -22,5 +25,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseFastEndpoints();
 
 app.Run();
