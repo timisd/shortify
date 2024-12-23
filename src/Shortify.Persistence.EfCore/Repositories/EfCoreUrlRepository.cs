@@ -22,6 +22,21 @@ public class EfCoreUrlRepository(ILogger<EfCoreUrlRepository> logger, AppDbConte
         }
     }
 
+    public async Task<Url?> UpdateUrlAsync(Url url, CancellationToken ct = default)
+    {
+        try
+        {
+            dbContext.Urls.Update(url);
+            await dbContext.SaveChangesAsync(ct);
+            return url;
+        }
+        catch (DbUpdateException ex)
+        {
+            logger.LogError(ex, "Error updating url");
+            return null;
+        }
+    }
+
     public async Task<Url?> DeleteUrlAsync(Guid id, CancellationToken ct = default)
     {
         try
