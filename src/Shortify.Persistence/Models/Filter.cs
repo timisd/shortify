@@ -3,9 +3,10 @@ namespace Shortify.Persistence.Models;
 public class Filter
 {
     public int StartPage { get; set; } = -1;
-    public int ItemsPerPage { get; set; } = 10;
-    public string OrderBy { get; set; } = "";
-    public IEnumerable<FilterExpression> FilterExpressions { get; set; } 
+    public int ItemsPerPage { get; set; } = -1;
+    public string? OrderBy { get; set; }
+
+    public IEnumerable<FilterExpression> FilterExpressions { get; set; }
         = new List<FilterExpression>();
 }
 
