@@ -1,6 +1,6 @@
-namespace Shortify.Common.Models;
+namespace Shortify.API.Contracts.Response;
 
-public class Url : Entity
+public class GetUrlResponse : BaseResponse
 {
     public string? OriginalLink { get; set; }
     public string? ShortLink { get; set; }

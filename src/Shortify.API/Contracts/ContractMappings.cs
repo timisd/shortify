@@ -20,14 +20,28 @@ public static class ContractMappings
         };
     }
 
-    public static AddUrlResponse MapToResponse(this Url url)
+    public static AddUrlResponse MapToAddUrlResponse(this Url url)
     {
         return new AddUrlResponse
         {
             OriginalLink = url.OriginalLink,
             ShortLink = url.ShortLink,
             Visits = url.Visits,
-            CreatedAt = url.CreatedAt
+            CreatedAt = url.CreatedAt,
+            Success = true
+        };
+    }
+
+    public static GetUrlResponse MapToGetUrlResponse(this Url url)
+    {
+        return new GetUrlResponse
+        {
+            OriginalLink = url.OriginalLink,
+            ShortLink = url.ShortLink,
+            Visits = url.Visits,
+            CreatedAt = url.CreatedAt,
+            UserId = url.UserId,
+            Success = true
         };
     }
 }

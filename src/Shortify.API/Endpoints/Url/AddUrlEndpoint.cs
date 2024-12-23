@@ -4,7 +4,7 @@ using Shortify.API.Contracts.Requests;
 using Shortify.API.Contracts.Response;
 using Shortify.Persistence;
 
-namespace Shortify.API.Endpoints.UrlEndpoints;
+namespace Shortify.API.Endpoints.Url;
 
 public class AddUrlEndpoint(IUrlRepository urlRepo) : Endpoint<AddUrlRequest, AddUrlResponse>
 {
@@ -25,6 +25,6 @@ public class AddUrlEndpoint(IUrlRepository urlRepo) : Endpoint<AddUrlRequest, Ad
                 Message = "Error adding url"
             }, StatusCodes.Status400BadRequest, ct);
         else
-            await SendAsync(shortenedUrl.MapToResponse(), StatusCodes.Status201Created, ct);
+            await SendAsync(shortenedUrl.MapToAddUrlResponse(), StatusCodes.Status201Created, ct);
     }
 }
