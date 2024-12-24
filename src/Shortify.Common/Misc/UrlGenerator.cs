@@ -5,7 +5,7 @@ namespace Shortify.Common.Misc;
 
 public class UrlGenerator
 {
-    public static string GenerateHash(string input)
+    public string GenerateHash(string input)
     {
         var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(input));
 

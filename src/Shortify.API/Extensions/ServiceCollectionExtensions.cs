@@ -1,3 +1,4 @@
+using Shortify.Common.Misc;
 using Shortify.Common.Models;
 using Shortify.Persistence;
 using Shortify.Persistence.EfCore;
@@ -22,6 +23,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUrlRepository, EfCoreUrlRepository>();
         services.AddScoped<IUserRepository, EfCoreUserRepository>();
 
+        return services;
+    }
+
+    public static IServiceCollection AddHelpers(this IServiceCollection services)
+    {
+        services.AddSingleton<PasswordHelper>();
+        services.AddSingleton<UrlGenerator>();
         return services;
     }
 }

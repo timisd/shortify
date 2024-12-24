@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddSettings(builder.Configuration);
+builder.Services.AddHelpers();
 builder.Services.AddRepositories();
 
 builder.Services.AddFastEndpoints();

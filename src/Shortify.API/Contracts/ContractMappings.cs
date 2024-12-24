@@ -7,13 +7,13 @@ namespace Shortify.API.Contracts;
 
 public static class ContractMappings
 {
-    public static Url MapToUrl(this AddUrlRequest req)
+    public static Url MapToUrl(this AddUrlRequest req, UrlGenerator urlGenerator)
     {
         return new Url
         {
             Id = Guid.NewGuid(),
             OriginalLink = req.OriginalLink,
-            ShortLink = req.ShortLink ?? UrlGenerator.GenerateHash(req.OriginalLink),
+            ShortLink = req.ShortLink ?? urlGenerator.GenerateHash(req.OriginalLink),
             Visits = 0,
             UserId = Guid.NewGuid(),
             CreatedAt = DateTime.UtcNow
@@ -42,6 +42,26 @@ public static class ContractMappings
             CreatedAt = url.CreatedAt,
             UserId = url.UserId,
             Success = true
+        };
+    }
+
+    public static User MapToUser(this RegisterRequest req, PasswordHelper passwordHelper)
+    {
+        return new User
+        {
+            Id = Guid.NewGuid(),
+            Email = req.Email,
+            PasswordHash = passwordHelper.ComputeSha256Hash(req.Password)
+        };
+    }
+
+    public static RegisterResponse MapToRegisterResponse(this User user)
+    {
+        return new RegisterResponse
+        {
+            Success = true,
+            Id = user.Id,
+            Email = user.Email
         };
     }
 }
