@@ -8,7 +8,7 @@ public class DeleteUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest
 {
     public override void Configure()
     {
-        Delete("/api/urls/{id}");
+        Delete("api/urls/{id}");
         AllowAnonymous();
     }
 

@@ -1,4 +1,5 @@
 using FastEndpoints;
+using Microsoft.AspNetCore.Authorization;
 using Shortify.API.Contracts;
 using Shortify.API.Contracts.Requests;
 using Shortify.API.Contracts.Response;
@@ -11,10 +12,10 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
 {
     public override void Configure()
     {
-        Post("/api/urls");
-        AllowAnonymous();
+        Post("api/urls");
     }
 
+    [Authorize]
     public override async Task HandleAsync(AddUrlRequest req, CancellationToken ct)
     {
         var shortenedUrl = await urlRepo.AddUrlAsync(req.MapToUrl(urlGenerator), ct);

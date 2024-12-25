@@ -1,7 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using FastEndpoints.Security;
+using System.Text;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Shortify.Common.Models;
 
 namespace Shortify.Common.Misc;
@@ -10,16 +11,24 @@ public class JwtTokenHelper(IOptions<GeneralSettings> conf)
 {
     public string CreateToken(User user)
     {
-        var jwt = JwtBearer.CreateToken(options =>
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(conf.Value.EncryptionKey);
+        var tokenDescriptor = new SecurityTokenDescriptor
         {
-            options.SigningKey = conf.Value.EncryptionKey;
-            options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()));
-            options.User.Claims.Add(new Claim(JwtRegisteredClaimNames.Name, user.Email));
-            if (user.IsAdmin)
-                options.User.Roles.Add("admin");
-            options.ExpireAt = DateTime.UtcNow.AddDays(7);
-        });
+            Subject = new ClaimsIdentity([
+                new Claim(ClaimTypes.Sid, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.IsAdmin ? "admin" : "user")
+            ]),
+            Expires = DateTime.UtcNow.AddHours(1),
+            Audience = "Shortify",
+            Issuer = "Shortify",
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
 
-        return jwt;
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
     }
 }

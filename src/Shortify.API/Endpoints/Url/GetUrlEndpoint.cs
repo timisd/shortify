@@ -1,4 +1,5 @@
 using FastEndpoints;
+using Microsoft.AspNetCore.Authorization;
 using Shortify.API.Contracts;
 using Shortify.API.Contracts.Response;
 using Shortify.Persistence;
@@ -9,10 +10,10 @@ public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<Get
 {
     public override void Configure()
     {
-        Get("/api/urls/{id}");
-        AllowAnonymous();
+        Get("api/urls/{id}");
     }
 
+    [Authorize]
     public override async Task HandleAsync(CancellationToken ct)
     {
         var id = Route<string>("id");

@@ -11,7 +11,7 @@ public class LoginEndpoint(IUserRepository userRepo, JwtTokenHelper jwtTokenHelp
 {
     public override void Configure()
     {
-        Post("/api/auth/login");
+        Post("api/auth/login");
         AllowAnonymous();
     }
 

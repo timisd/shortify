@@ -12,7 +12,7 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
 {
     public override void Configure()
     {
-        Post("/api/auth/register");
+        Post("api/auth/register");
         AllowAnonymous();
     }
 

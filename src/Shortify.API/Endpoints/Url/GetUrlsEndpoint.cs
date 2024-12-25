@@ -8,7 +8,7 @@ public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedRes
 {
     public override void Configure()
     {
-        Get("/api/urls");
+        Get("api/urls");
         AllowAnonymous();
     }
 
