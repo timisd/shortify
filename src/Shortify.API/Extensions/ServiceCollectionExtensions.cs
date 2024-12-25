@@ -29,6 +29,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddHelpers(this IServiceCollection services)
     {
         services.AddSingleton<PasswordHelper>();
+        services.AddSingleton<JwtTokenHelper>();
         services.AddSingleton<UrlGenerator>();
         return services;
     }
