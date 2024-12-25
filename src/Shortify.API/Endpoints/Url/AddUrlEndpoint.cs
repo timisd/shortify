@@ -1,9 +1,11 @@
+using System.Security.Claims;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 using Shortify.API.Contracts;
 using Shortify.API.Contracts.Requests;
 using Shortify.API.Contracts.Response;
 using Shortify.Common.Misc;
+using Shortify.Common.Models;
 using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Url;
@@ -18,7 +20,29 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
     [Authorize]
     public override async Task HandleAsync(AddUrlRequest req, CancellationToken ct)
     {
-        var shortenedUrl = await urlRepo.AddUrlAsync(req.MapToUrl(urlGenerator), ct);
+        var userId = User.FindFirstValue(ClaimTypes.Sid);
+        if (userId == null || !Guid.TryParse(userId, out var userGuid))
+        {
+            await SendAsync(new AddUrlResponse
+            {
+                Success = false,
+                Message = "User not found"
+            }, StatusCodes.Status400BadRequest, ct);
+            return;
+        }
+
+        var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
+        if (!isAdmin && req.ShortLink != null)
+        {
+            await SendAsync(new AddUrlResponse
+            {
+                Success = false,
+                Message = "Only admins can specify a custom short link"
+            }, StatusCodes.Status400BadRequest, ct);
+            return;
+        }
+
+        var shortenedUrl = await urlRepo.AddUrlAsync(req.MapToUrl(urlGenerator, userGuid), ct);
 
         if (shortenedUrl == null)
             await SendAsync(new AddUrlResponse

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -17,6 +18,12 @@ builder.Services.AddRepositories();
 builder.Services.AddFastEndpoints();
 
 var settings = builder.Configuration.GetSection("GeneralSettings").Get<GeneralSettings>();
+if (settings == null)
+{
+    Debug.WriteLine("GeneralSettings not found");
+    return;
+}
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

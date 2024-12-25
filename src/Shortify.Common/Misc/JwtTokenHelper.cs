@@ -18,7 +18,7 @@ public class JwtTokenHelper(IOptions<GeneralSettings> conf)
             Subject = new ClaimsIdentity([
                 new Claim(ClaimTypes.Sid, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.IsAdmin ? "admin" : "user")
+                new Claim(ClaimTypes.Role, user.Role.ToFriendlyString())
             ]),
             Expires = DateTime.UtcNow.AddHours(1),
             Audience = "Shortify",

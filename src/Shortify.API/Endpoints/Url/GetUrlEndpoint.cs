@@ -1,7 +1,9 @@
+using System.Security.Claims;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 using Shortify.API.Contracts;
 using Shortify.API.Contracts.Response;
+using Shortify.Common.Models;
 using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Url;
@@ -28,9 +30,10 @@ public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<Get
             return;
         }
 
-
         var url = await urlRepo.GetUrlAsync(guid, ct);
-        if (url == null)
+        var userId = User.FindFirstValue(ClaimTypes.Sid);
+        var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
+        if (url == null || (url.UserId.ToString() != userId && !isAdmin))
             await SendAsync(new GetUrlResponse
             {
                 Success = false,

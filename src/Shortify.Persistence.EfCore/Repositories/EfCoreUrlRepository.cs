@@ -95,6 +95,19 @@ public class EfCoreUrlRepository(ILogger<EfCoreUrlRepository> logger, AppDbConte
         var query = QueryHelper.ApplyFilter(dbContext.Urls.AsQueryable(), filter);
 
         var totalItems = await query.CountAsync(ct);
+
+        if (filter.StartPage == -1)
+        {
+            var allItems = await query.ToListAsync(ct);
+            return new PagedResult<Url>
+            {
+                Items = allItems,
+                TotalItems = allItems.Count,
+                CurrentPage = -1,
+                TotalPages = 1
+            };
+        }
+
         var totalPages = (int)Math.Ceiling(totalItems / (double)filter.ItemsPerPage);
 
         var items = await query
