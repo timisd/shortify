@@ -46,7 +46,7 @@ public static class QueryHelper
     private static Expression CreateComparison(ExpressionType comparisonType, MemberExpression property,
         ConstantExpression value)
     {
-        if (property.Type != typeof(Guid?) || value.Type != typeof(string))
+        if (property.Type != typeof(Guid) || value.Type != typeof(string))
             return Expression.MakeBinary(comparisonType, property, value);
 
         if (value.Value == null)

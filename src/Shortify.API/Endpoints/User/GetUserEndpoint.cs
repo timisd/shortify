@@ -6,13 +6,13 @@ using Shortify.API.Contracts.Response;
 using Shortify.Common.Models;
 using Shortify.Persistence;
 
-namespace Shortify.API.Endpoints.Url;
+namespace Shortify.API.Endpoints.User;
 
-public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<GetUrlResponse>
+public class GetUserEndpoint(IUserRepository userRepo) : EndpointWithoutRequest<GetUserResponse>
 {
     public override void Configure()
     {
-        Get("api/urls/{id}");
+        Get("api/users/{id}");
     }
 
     [Authorize]
@@ -22,7 +22,7 @@ public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<Get
         var isGuid = Guid.TryParse(id, out var guid);
         if (!isGuid)
         {
-            await SendAsync(new GetUrlResponse
+            await SendAsync(new GetUserResponse
             {
                 Success = false,
                 Message = "Invalid id"
@@ -30,16 +30,16 @@ public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<Get
             return;
         }
 
-        var url = await urlRepo.GetUrlAsync(guid, ct);
+        var user = await userRepo.GetUserAsync(guid, ct);
         var userId = User.FindFirstValue(ClaimTypes.Sid);
         var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
-        if (url == null || (url.UserId.ToString() != userId && !isAdmin))
-            await SendAsync(new GetUrlResponse
+        if (user == null || (user.Id.ToString() != userId && !isAdmin))
+            await SendAsync(new GetUserResponse
             {
                 Success = false,
-                Message = "Url not found"
+                Message = "User not found"
             }, StatusCodes.Status404NotFound, ct);
         else
-            await SendAsync(url.ToGetUrlResponse(), StatusCodes.Status200OK, ct);
+            await SendAsync(user.ToGetUserResponse(), StatusCodes.Status200OK, ct);
     }
 }

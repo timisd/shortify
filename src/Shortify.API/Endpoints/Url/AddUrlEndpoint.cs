@@ -42,7 +42,7 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
             return;
         }
 
-        var shortenedUrl = await urlRepo.AddUrlAsync(req.MapToUrl(urlGenerator, userGuid), ct);
+        var shortenedUrl = await urlRepo.AddUrlAsync(req.ToUrl(urlGenerator, userGuid), ct);
 
         if (shortenedUrl == null)
             await SendAsync(new AddUrlResponse
@@ -51,6 +51,6 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
                 Message = "Error adding url"
             }, StatusCodes.Status400BadRequest, ct);
         else
-            await SendAsync(shortenedUrl.MapToAddUrlResponse(), StatusCodes.Status201Created, ct);
+            await SendAsync(shortenedUrl.ToAddUrlResponse(), StatusCodes.Status201Created, ct);
     }
 }

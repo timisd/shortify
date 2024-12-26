@@ -29,7 +29,7 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
             return;
         }
 
-        var newUser = req.MapToUser(passwordHelper);
+        var newUser = req.ToUser(passwordHelper);
         var result = await userRepo.AddUserAsync(newUser, ct);
         if (result == null)
         {
@@ -41,6 +41,6 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
             return;
         }
 
-        await SendAsync(result.MapToRegisterResponse(), StatusCodes.Status201Created, ct);
+        await SendAsync(result.ToRegisterResponse(), StatusCodes.Status201Created, ct);
     }
 }
