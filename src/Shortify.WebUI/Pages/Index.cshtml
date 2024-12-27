@@ -1,0 +1,25 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IndexModel
+@{
+    ViewData["Title"] = "Welcome to Shortify";
+}
+
+<div class="text-center">
+    @if (User.Identity is { IsAuthenticated: true })
+    {
+        <h1 class="display-4">Welcome, @User.Claims.FirstOrDefault(c => c.Type == "email")?.Value!</h1>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to Shortify</h1>
+    }
+    <p class="lead">Your go-to URL shortening service.</p>
+    <p>Shorten your links quickly and easily.</p>
+    <form method="post" asp-page-handler="ShortenUrl">
+        <div class="form-group">
+            <input type="url" class="form-control" name="originalUrl" placeholder="Enter your long URL here" required/>
+        </div>
+        <button type="submit" class="btn btn-primary">Shorten URL</button>
+    </form>
+</div>

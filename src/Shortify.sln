@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.Persistence", "Sho
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.Persistence.EfCore", "Shortify.Persistence.EfCore\Shortify.Persistence.EfCore.csproj", "{25D63E9B-C929-4630-8EB3-D08AA5118803}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shortify.WebUI", "Shortify.WebUI\Shortify.WebUI.csproj", "{691DC334-7116-496D-8272-E5D6AC5A46E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25D63E9B-C929-4630-8EB3-D08AA5118803}.Release|Any CPU.Build.0 = Release|Any CPU
+		{691DC334-7116-496D-8272-E5D6AC5A46E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{691DC334-7116-496D-8272-E5D6AC5A46E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{691DC334-7116-496D-8272-E5D6AC5A46E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{691DC334-7116-496D-8272-E5D6AC5A46E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

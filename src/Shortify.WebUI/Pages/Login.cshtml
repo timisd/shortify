@@ -1,0 +1,27 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Shortify - Login";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Login</h1>
+    <form method="post">
+        <div class="form-group">
+            <label for="email">E-Mail</label>
+            <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" required/>
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password"
+                   required/>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
