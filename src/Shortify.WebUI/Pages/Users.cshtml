@@ -4,43 +4,31 @@
     ViewData["Title"] = "- Users";
 }
 
-<h1>Shortened URLs</h1>
+<h1>Singed up Users</h1>
 
 @if (Model.PagedResult != null && Model.PagedResult.Items.Any())
 {
     <table class="table">
         <thead>
         <tr>
-            <th>Original URL</th>
-            <th>Shortened URL</th>
-            <th>Visits</th>
-            @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
-            {
-                <th>Created by</th>
-            }
+            <th>Email</th>
+            <th>Role</th>
             <th>Created at</th>
             <th></th>
         </tr>
         </thead>
         <tbody>
-        @foreach (var url in Model.PagedResult.Items)
+        @foreach (var user in Model.PagedResult.Items)
         {
             <tr>
-                <td>@url.OriginalLink</td>
-                <td>@url.ShortLink</td>
-                <td>@url.Visits</td>
-                @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
-                {
-                    <td>@url.UserMail</td>
-                }
-                <td>
-                    <div title="@url.CreatedAt.ToLocalTime().ToString("HH:mm:ss")">
-                        @url.CreatedAt.ToLocalTime().ToString("dd.MM.yy")
-                    </div>
+                <td>@user.Email</td>
+                <td>@user.Role</td>
+                <td title="@user.CreatedAt.ToLocalTime().ToString("HH:mm:ss")">
+                    @user.CreatedAt.ToLocalTime().ToString("dd.MM.yy")
                 </td>
                 <td>
                     <form method="post" asp-page-handler="Delete">
-                        <input type="hidden" name="id" value="@url.Id"/>
+                        <input type="hidden" name="id" value="@user.Id"/>
                         <button type="submit" class="btn btn-danger">🗑️</button>
                     </form>
                 </td>

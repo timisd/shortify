@@ -52,7 +52,8 @@ public static class ContractMappings
         {
             Id = Guid.NewGuid(),
             Email = req.Email,
-            PasswordHash = passwordHelper.ComputeSha256Hash(req.Password)
+            PasswordHash = passwordHelper.ComputeSha256Hash(req.Password),
+            CreatedAt = DateTime.UtcNow
         };
     }
 
@@ -73,7 +74,8 @@ public static class ContractMappings
             Success = true,
             Id = user.Id,
             Email = user.Email,
-            Role = user.Role.ToFriendlyString()
+            Role = user.Role.ToFriendlyString(),
+            CreatedAt = user.CreatedAt
         };
     }
 

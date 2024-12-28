@@ -7,18 +7,18 @@ namespace Shortify.WebUI.Pages;
 
 public class UsersModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
 {
-    public PagedResult<GetUrlResponse>? PagedResult { get; set; }
+    public PagedResult<GetUserResponse>? PagedResult { get; set; }
 
     public async Task OnGetAsync()
     {
         var token = GetToken();
         if (string.IsNullOrEmpty(token)) return;
 
-        var response = await apiClient.GetAsync("urls", token);
+        var response = await apiClient.GetAsync("users", token);
         if (response.IsSuccessStatusCode)
         {
             var content = await response.Content.ReadAsStringAsync();
-            PagedResult = jsonHelper.Deserialize<PagedResult<GetUrlResponse>>(content);
+            PagedResult = jsonHelper.Deserialize<PagedResult<GetUserResponse>>(content);
         }
     }
 
@@ -26,7 +26,7 @@ public class UsersModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
     {
         var token = GetToken();
         if (!string.IsNullOrEmpty(token))
-            await apiClient.DeleteAsync($"urls/{id}", token);
+            await apiClient.DeleteAsync($"users/{id}", token);
 
         return RedirectToPage();
     }
