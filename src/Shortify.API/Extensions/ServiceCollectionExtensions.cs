@@ -30,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<PasswordHelper>();
         services.AddSingleton<JwtTokenHelper>();
         services.AddSingleton<UrlGenerator>();
+        services.AddSingleton<JsonHelper>();
         return services;
     }
 }

@@ -7,7 +7,7 @@
   },
   "GeneralSettings": {
     "EncryptionKey": "custom_encryption_key",
-    "EncryptionSalt": "custom_encryption_salt",
+    "EncryptionSalt": "custom_encryption_salt"
   },
   "DatabaseSettings": {
     "Host": "ip_of_database",

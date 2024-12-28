@@ -6,7 +6,7 @@
 
 <h1>Shortened URLs</h1>
 
-@if (Model.PagedResult.Items.Any())
+@if (Model.PagedResult != null && Model.PagedResult.Items.Any())
 {
     <table class="table">
         <thead>

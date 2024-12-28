@@ -8,10 +8,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shortify.Common.Contracts.Response;
+using Shortify.Common.Misc;
 
 namespace Shortify.WebUI.Pages;
 
-public class LoginModel : PageModel
+public class LoginModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
 {
     private JsonSerializerOptions _jsonSerializerOptions = new()
     {
@@ -39,36 +40,16 @@ public class LoginModel : PageModel
         var json = JsonSerializer.Serialize(loginData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        using var client = new HttpClient();
-        var response = await client.PostAsync("http://localhost:5134/api/auth/login", content);
+        var response = await apiClient.PostAsync("auth/login", content);
 
         if (response.IsSuccessStatusCode)
         {
             var responseContent = await response.Content.ReadAsStringAsync();
-            var loginResponse = JsonSerializer.Deserialize<LoginResponse>(responseContent, _jsonSerializerOptions);
+            var loginResponse = jsonHelper.Deserialize<LoginResponse>(responseContent);
 
             if (loginResponse is { Success: true })
             {
-                var handler = new JwtSecurityTokenHandler();
-                var jwtToken = handler.ReadJwtToken(loginResponse.Token);
-                var claims = jwtToken.Claims.ToList();
-
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
-                    new AuthenticationProperties
-                    {
-                        IsPersistent = true,
-                        ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-                    });
-
-                HttpContext.Response.Cookies.Append("AuthToken", loginResponse.Token, new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    Expires = DateTimeOffset.UtcNow.AddDays(7)
-                });
+                await LogIn(loginResponse);
 
                 return RedirectToPage("/Index");
             }
@@ -76,5 +57,29 @@ public class LoginModel : PageModel
 
         ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials and try again.");
         return Page();
+    }
+
+    private async Task LogIn(LoginResponse loginResponse)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(loginResponse.Token);
+        var claims = jwtToken.Claims.ToList();
+
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
+            new AuthenticationProperties
+            {
+                IsPersistent = true,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
+        HttpContext.Response.Cookies.Append("AuthToken", loginResponse.Token, new CookieOptions
+        {
+            HttpOnly = true,
+            Secure = true,
+            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        });
     }
 }

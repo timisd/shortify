@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Shortify.Common.Misc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => { options.LoginPath = "/Login"; });
+
+builder.Services.AddSingleton<JsonHelper>();
+builder.Services.AddHttpClient();
+builder.Services.AddSingleton<ApiClient>();
 
 var app = builder.Build();
 

@@ -7,7 +7,6 @@ public static class QueryHelper
 {
     public static IQueryable<T> ApplyFilter<T>(IQueryable<T> query, Filter filter)
     {
-        // Apply filters
         query = (from expression in filter.FilterExpressions
                 let parameter = Expression.Parameter(typeof(T), "x")
                 let property = Expression.Property(parameter, expression.PropertyName)
@@ -25,7 +24,6 @@ public static class QueryHelper
                 select Expression.Lambda<Func<T, bool>>(comparison, parameter))
             .Aggregate(query, (current, lambda) => current.Where(lambda));
 
-        // Apply ordering
         if (string.IsNullOrEmpty(filter.OrderBy)) return query;
         {
             var orderByParts = filter.OrderBy.Split(' ');
@@ -46,14 +44,22 @@ public static class QueryHelper
     private static Expression CreateComparison(ExpressionType comparisonType, MemberExpression property,
         ConstantExpression value)
     {
-        if (property.Type != typeof(Guid) || value.Type != typeof(string))
-            return Expression.MakeBinary(comparisonType, property, value);
+        if (property.Type == typeof(Guid?) && value.Type == typeof(Guid))
+        {
+            var hasValueExpression = Expression.Property(property, "HasValue");
+            var valueExpression = Expression.Property(property, "Value");
+            var comparison = Expression.MakeBinary(comparisonType, valueExpression, value);
+            return Expression.AndAlso(hasValueExpression, comparison);
+        }
+        
+        if (property.Type == typeof(Guid) && value.Type == typeof(string) && value.Value != null)
+        {
+            var guidValue = Guid.Parse((string)value.Value);
+            var guidConstant = Expression.Constant(guidValue, typeof(Guid));
+            return Expression.MakeBinary(comparisonType, property, guidConstant);
+        }
 
-        if (value.Value == null)
-            return Expression.MakeBinary(comparisonType, property, Expression.Constant(null, typeof(Guid?)));
+        return Expression.MakeBinary(comparisonType, property, value);
 
-        var guidValue = Guid.Parse((string)value.Value);
-        var guidConstant = Expression.Constant(guidValue, typeof(Guid?));
-        return Expression.MakeBinary(comparisonType, property, guidConstant);
     }
 }
