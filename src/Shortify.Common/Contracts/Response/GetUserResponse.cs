@@ -1,4 +1,4 @@
-namespace Shortify.API.Contracts.Response;
+namespace Shortify.Common.Contracts.Response;
 
 public class GetUserResponse : BaseResponse
 {

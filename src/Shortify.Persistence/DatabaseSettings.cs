@@ -1,4 +1,4 @@
-namespace Shortify.Persistence.Models;
+namespace Shortify.Persistence;
 
 public class DatabaseSettings
 {

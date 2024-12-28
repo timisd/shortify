@@ -1,5 +1,5 @@
 using System.Linq.Expressions;
-using Shortify.Persistence.Models;
+using Shortify.Common.Contracts.Requests;
 
 namespace Shortify.Persistence;
 

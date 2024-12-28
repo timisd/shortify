@@ -1,9 +1,10 @@
-namespace Shortify.API.Contracts.Response;
+namespace Shortify.Common.Contracts.Response;
 
-public class AddUrlResponse : BaseResponse
+public class GetUrlResponse : BaseResponse
 {
     public string? OriginalLink { get; set; }
     public string? ShortLink { get; set; }
     public int Visits { get; set; }
     public DateTime CreatedAt { get; set; }
+    public Guid? UserId { get; set; }
 }

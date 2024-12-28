@@ -1,4 +1,4 @@
-namespace Shortify.Persistence.Models;
+namespace Shortify.Common.Contracts.Requests;
 
 public class Filter
 {

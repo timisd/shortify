@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Options;
 using Npgsql;
-using Shortify.Persistence.Models;
 
 namespace Shortify.Persistence.EfCore;
 

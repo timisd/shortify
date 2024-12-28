@@ -1,7 +1,7 @@
 using FastEndpoints;
-using Shortify.API.Contracts;
-using Shortify.API.Contracts.Requests;
-using Shortify.API.Contracts.Response;
+using Shortify.Common.Contracts;
+using Shortify.Common.Contracts.Requests;
+using Shortify.Common.Contracts.Response;
 using Shortify.Common.Misc;
 using Shortify.Persistence;
 

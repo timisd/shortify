@@ -9,5 +9,6 @@ public class LogoutModel : PageModel
     public async Task OnGetAsync()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        HttpContext.Response.Cookies.Delete("AuthToken");
     }
 }

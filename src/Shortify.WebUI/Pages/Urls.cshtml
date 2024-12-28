@@ -1,0 +1,38 @@
+@page
+@model UrlsModel
+@{
+    ViewData["Title"] = "Urls";
+}
+
+<h1>Shortened URLs</h1>
+
+@if (Model.PagedResult.Items.Any())
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Original URL</th>
+            <th>Shortened URL</th>
+            <th>Visits</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var url in Model.PagedResult.Items)
+        {
+            <tr>
+                <td>@url.OriginalLink</td>
+                <td>@url.ShortLink</td>
+                <td>@url.Visits</td>
+                <td>
+                    <button>Delete</button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No URLs found.</p>
+}

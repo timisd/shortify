@@ -1,3 +1,3 @@
-namespace Shortify.API.Contracts.Requests;
+namespace Shortify.Common.Contracts.Requests;
 
 public record AddUrlRequest(string OriginalLink, string? ShortLink);

@@ -1,4 +1,4 @@
-namespace Shortify.Persistence.Models;
+namespace Shortify.Common.Contracts.Response;
 
 public class PagedResult<T>
 {

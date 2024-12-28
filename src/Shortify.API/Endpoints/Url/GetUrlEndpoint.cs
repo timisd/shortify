@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
-using Shortify.API.Contracts;
-using Shortify.API.Contracts.Response;
+using Shortify.Common.Contracts;
+using Shortify.Common.Contracts.Response;
 using Shortify.Common.Models;
 using Shortify.Persistence;
 

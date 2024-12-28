@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Shortify.API.Contracts.Response;
+using Shortify.Common.Contracts.Response;
 
 namespace Shortify.WebUI.Pages;
 
 public class LoginModel : PageModel
 {
+    private JsonSerializerOptions _jsonSerializerOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     [BindProperty]
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Invalid email address.")]
@@ -39,12 +44,8 @@ public class LoginModel : PageModel
 
         if (response.IsSuccessStatusCode)
         {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true // Ignoriere Groß-/Kleinschreibung bei den Eigenschaften
-            };
             var responseContent = await response.Content.ReadAsStringAsync();
-            var loginResponse = JsonSerializer.Deserialize<LoginResponse>(responseContent, options);
+            var loginResponse = JsonSerializer.Deserialize<LoginResponse>(responseContent, _jsonSerializerOptions);
 
             if (loginResponse is { Success: true })
             {
@@ -61,6 +62,14 @@ public class LoginModel : PageModel
                         IsPersistent = true,
                         ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
                     });
+
+                HttpContext.Response.Cookies.Append("AuthToken", loginResponse.Token, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTimeOffset.UtcNow.AddDays(7)
+                });
+
                 return RedirectToPage("/Index");
             }
         }

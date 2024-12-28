@@ -3,7 +3,6 @@ using Shortify.Common.Models;
 using Shortify.Persistence;
 using Shortify.Persistence.EfCore;
 using Shortify.Persistence.EfCore.Repositories;
-using Shortify.Persistence.Models;
 
 namespace Shortify.API.Extensions;
 

@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shortify.Common.Contracts.Requests;
+using Shortify.Common.Contracts.Response;
 using Shortify.Common.Models;
-using Shortify.Persistence.Models;
 
 namespace Shortify.Persistence.EfCore.Repositories;
 
