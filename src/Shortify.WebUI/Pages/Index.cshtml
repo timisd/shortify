@@ -16,10 +16,23 @@
     }
     <p class="lead">Your go-to URL shortening service.</p>
     <p>Shorten your links quickly and easily.</p>
-    <form method="post" asp-page-handler="ShortenUrl">
-        <div class="form-group">
-            <input type="url" class="form-control" name="originalUrl" placeholder="Enter your long URL here" required/>
-        </div>
-        <button type="submit" class="btn btn-primary">Shorten URL</button>
-    </form>
+    @if (User.Identity is { IsAuthenticated: true })
+    {
+        <form method="post" asp-page-handler="Short">
+            <div class="form-group">
+                <label for="originalUrl">Original URL</label>
+                <input type="text" class="form-control" id="originalUrl" name="originalUrl"
+                       placeholder="Enter your long URL here" required/>
+            </div>
+            @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
+            {
+                <div class="form-group">
+                    <label for="customShort">Custom Short URL</label>
+                    <input type="text" class="form-control" id="customShort" name="customShort"
+                           placeholder="Enter your custom short URL here"/>
+                </div>
+            }
+            <button type="submit" class="btn btn-primary">Shorten URL</button>
+        </form>
+    }
 </div>

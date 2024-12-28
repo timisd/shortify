@@ -42,7 +42,8 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
             return;
         }
 
-        var shortenedUrl = await urlRepo.AddUrlAsync(req.ToUrl(urlGenerator, userGuid), ct);
+        var shortenedUrl =
+            await urlRepo.AddUrlAsync(req.ToUrl(urlGenerator, User.FindFirstValue(ClaimTypes.Email)), ct);
 
         if (shortenedUrl == null)
             await SendAsync(new AddUrlResponse

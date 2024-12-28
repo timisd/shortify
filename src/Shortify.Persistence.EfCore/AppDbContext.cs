@@ -14,6 +14,7 @@ public class AppDbContext(DbConnectionFactory dbConnectionFactory) : DbContext
         {
             entity.HasKey(e => e.Id);
             entity.HasIndex(e => e.ShortLink).IsUnique();
+            entity.HasIndex(e => e.UserMail);
         });
         modelBuilder.Entity<User>(entity =>
         {

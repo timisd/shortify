@@ -14,6 +14,11 @@
             <th>Original URL</th>
             <th>Shortened URL</th>
             <th>Visits</th>
+            @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
+            {
+                <th>Created by</th>
+            }
+            <th>Created at</th>
             <th></th>
         </tr>
         </thead>
@@ -24,8 +29,20 @@
                 <td>@url.OriginalLink</td>
                 <td>@url.ShortLink</td>
                 <td>@url.Visits</td>
+                @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
+                {
+                    <td>@url.UserMail</td>
+                }
                 <td>
-                    <button>Delete</button>
+                    <div title="@url.CreatedAt.ToLocalTime().ToString("HH:mm:ss")">
+                        @url.CreatedAt.ToLocalTime().ToString("dd.MM.yy")
+                    </div>
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="Delete">
+                        <input type="hidden" name="id" value="@url.Id"/>
+                        <button type="submit" class="btn btn-danger">🗑️</button>
+                    </form>
                 </td>
             </tr>
         }

@@ -7,7 +7,7 @@ namespace Shortify.Common.Contracts;
 
 public static class ContractMappings
 {
-    public static Url ToUrl(this AddUrlRequest req, UrlGenerator urlGenerator, Guid userId)
+    public static Url ToUrl(this AddUrlRequest req, UrlGenerator urlGenerator, string? userMail)
     {
         return new Url
         {
@@ -15,7 +15,7 @@ public static class ContractMappings
             OriginalLink = req.OriginalLink,
             ShortLink = req.ShortLink ?? urlGenerator.GenerateHash(req.OriginalLink),
             Visits = 0,
-            UserId = userId,
+            UserMail = userMail,
             CreatedAt = DateTime.UtcNow
         };
     }
@@ -36,11 +36,12 @@ public static class ContractMappings
     {
         return new GetUrlResponse
         {
+            Id = url.Id,
             OriginalLink = url.OriginalLink,
             ShortLink = url.ShortLink,
             Visits = url.Visits,
             CreatedAt = url.CreatedAt,
-            UserId = url.UserId,
+            UserMail = url.UserMail,
             Success = true
         };
     }
