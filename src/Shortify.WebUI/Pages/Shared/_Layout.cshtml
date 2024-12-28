@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var currentPage = ViewContext.RouteData.Values["Page"]?.ToString()?.ToLower();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -49,7 +53,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Register">Register</a>
                         </li>
                     }
-                    else
+                    else if (currentPage != "/logout")
                     {
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Logout">Logout</a>
