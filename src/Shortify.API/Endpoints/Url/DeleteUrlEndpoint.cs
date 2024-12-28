@@ -31,9 +31,9 @@ public class DeleteUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest
 
 
         var url = await urlRepo.DeleteUrlAsync(guid, ct);
-        var userId = User.FindFirstValue(ClaimTypes.Sid);
+        var userMail = User.FindFirstValue(ClaimTypes.Email);
         var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
-        if (url == null || (url.UserId.ToString() != userId && !isAdmin))
+        if (url == null || (url.UserMail != userMail && !isAdmin))
             await SendAsync(new GetUrlResponse
             {
                 Success = false,

@@ -24,8 +24,8 @@ public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedRes
         var isDefaultFilter = filter is { StartPage: -1, ItemsPerPage: -1 } &&
                               string.IsNullOrEmpty(filter.OrderBy) &&
                               filter.FilterExpressions.Count == 0;
-        var userId = User.FindFirstValue(ClaimTypes.Sid);
-        if (userId == null)
+        var userMail = User.FindFirstValue(ClaimTypes.Email);
+        if (userMail == null)
         {
             await SendAsync(null!, StatusCodes.Status400BadRequest, ct);
             return;
@@ -42,11 +42,18 @@ public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedRes
             if (!isAdmin)
                 filter.FilterExpressions.Add(new FilterExpression
                 {
-                    PropertyName = nameof(Common.Models.Url.UserId),
+                    PropertyName = nameof(Common.Models.Url.UserMail),
                     Operator = FilterOperator.Equal,
-                    Value = userId
+                    Value = userMail
                 });
             result = (await urlRepo.GetUrlsAsync(filter, ct)).ToGetUrlResponsePagedResult();
+        }
+
+        if (!isAdmin)
+        {
+            var list = result.Items.ToList();
+            foreach (var item in list) item.UserMail = null;
+            result.Items = list.AsEnumerable();
         }
 
         await SendAsync(result, StatusCodes.Status200OK, ct);

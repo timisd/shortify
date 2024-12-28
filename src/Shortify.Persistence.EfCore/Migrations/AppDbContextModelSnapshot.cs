@@ -39,8 +39,8 @@ namespace Shortify.Persistence.EfCore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
+                    b.Property<string>("UserMail")
+                        .HasColumnType("text");
 
                     b.Property<int>("Visits")
                         .HasColumnType("integer");
@@ -49,6 +49,8 @@ namespace Shortify.Persistence.EfCore.Migrations
 
                     b.HasIndex("ShortLink")
                         .IsUnique();
+
+                    b.HasIndex("UserMail");
 
                     b.ToTable("Urls");
                 });

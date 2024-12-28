@@ -14,11 +14,6 @@ namespace Shortify.WebUI.Pages;
 
 public class LoginModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
 {
-    private JsonSerializerOptions _jsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
-
     [BindProperty]
     [Required(ErrorMessage = "Email is required.")]
     [EmailAddress(ErrorMessage = "Invalid email address.")]
@@ -28,11 +23,7 @@ public class LoginModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
     [Required(ErrorMessage = "Password is required.")]
     public string Password { get; set; } = string.Empty;
 
-    public void OnGet()
-    {
-    }
-
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostLoginAsync()
     {
         if (!ModelState.IsValid) return Page();
 

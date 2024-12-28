@@ -4,6 +4,23 @@
     ViewData["Title"] = "Urls";
 }
 
+<style>
+    .date {
+        position: relative;
+    }
+
+    .date:hover::after {
+        content: attr(title);
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 2px 5px;
+        white-space: nowrap;
+        z-index: 10;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
 <h1>Shortened URLs</h1>
 
 @if (Model.PagedResult != null && Model.PagedResult.Items.Any())
@@ -14,6 +31,11 @@
             <th>Original URL</th>
             <th>Shortened URL</th>
             <th>Visits</th>
+            @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
+            {
+                <th>Created by</th>
+            }
+            <th>Created at</th>
             <th></th>
         </tr>
         </thead>
@@ -24,8 +46,20 @@
                 <td>@url.OriginalLink</td>
                 <td>@url.ShortLink</td>
                 <td>@url.Visits</td>
+                @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
+                {
+                    <td>@url.UserMail</td>
+                }
                 <td>
-                    <button>Delete</button>
+                    <div class="date" title="@url.CreatedAt.ToLocalTime().ToString("HH:mm:ss")">
+                        @url.CreatedAt.ToLocalTime().ToString("dd.MM.yy")
+                    </div>
+                </td>
+                <td>
+                    <form method="post" asp-page-handler="Delete">
+                        <input type="hidden" name="id" value="@url.Id"/>
+                        <button type="submit" class="btn btn-danger">🗑️</button>
+                    </form>
                 </td>
             </tr>
         }
