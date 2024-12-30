@@ -1,5 +1,4 @@
 ﻿@page
-@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model IndexModel
 @{
     ViewData["Title"] = "";
@@ -23,6 +22,7 @@
                 <label for="originalUrl">Original URL</label>
                 <input type="text" class="form-control" id="originalUrl" name="originalUrl"
                        placeholder="Enter your long URL here" required/>
+                <span asp-validation-for="OriginalUrl" class="text-danger"></span>
             </div>
             @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
             {
