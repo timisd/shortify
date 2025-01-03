@@ -23,8 +23,8 @@ public class LoginEndpoint(IUserRepository userRepo, JwtTokenHelper jwtTokenHelp
             await SendAsync(new LoginResponse
             {
                 Success = false,
-                Message = "Invalid email or password"
-            }, StatusCodes.Status400BadRequest, ct);
+                Message = "No user found with this credentials"
+            }, StatusCodes.Status404NotFound, ct);
             return;
         }
 

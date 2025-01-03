@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -32,10 +33,10 @@ public class LoginModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         var response = await apiClient.PostAsync("auth/login", content);
+        var responseContent = await response.Content.ReadAsStringAsync();
 
         if (response.IsSuccessStatusCode)
         {
-            var responseContent = await response.Content.ReadAsStringAsync();
             var loginResponse = jsonHelper.Deserialize<LoginResponse>(responseContent);
 
             if (loginResponse is { Success: true })
@@ -44,6 +45,13 @@ public class LoginModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
 
                 return RedirectToPage("/Index");
             }
+        }
+
+        var baseResponse = jsonHelper.Deserialize<BaseResponse>(responseContent);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+        {
+            ModelState.AddModelError("Email", baseResponse!.Message ?? string.Empty);
+            return Page();
         }
 
         ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials and try again.");
