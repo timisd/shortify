@@ -7,22 +7,138 @@
 
 <div class="text-center">
     <h1 class="display-4">Register</h1>
+</div>
+<div>
     <form method="post" asp-page-handler="Register">
         <div class="form-group">
-            <label for="email">E-Mail</label>
-            <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" required/>
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" required
+                   oninput="validateEmail()"/>
+            <span asp-validation-for="Email" class="text-danger" id="valid-email" style="display:none;">Invalid email format</span>
         </div>
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password"
-                   required/>
+                   required oninput="validatePassword()"/>
+            <span asp-validation-for="Password" class="text-danger"></span>
+            <div id="password-requirements">
+                <p>Password needs to be:</p>
+                <ul>
+                    <li id="min-length" class="text-danger">min 8 characters long</li>
+                    <li id="number" class="text-danger">contain at least one number</li>
+                    <li id="special-char" class="text-danger">contain at least one special character</li>
+                </ul>
+            </div>
         </div>
         <div class="form-group">
             <label for="confirmPassword">Confirm Password</label>
             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                   placeholder="Confirm your password"
-                   required/>
+                   placeholder="Confirm your password" required oninput="validatePassword()"/>
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <span id="password-match-error" class="text-danger" style="display: none;">Passwords do not match</span>
         </div>
-        <button type="submit" class="btn btn-primary">Register</button>
+        <button type="submit" class="btn btn-primary" disabled>Register</button>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+    <script>
+        function validateEmail() {
+            const email = document.getElementById('email').value;
+            const emailField = document.getElementById('email');
+            const validEmail = document.getElementById('valid-email');
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const isValid = emailPattern.test(email);
+
+            if (isValid) {
+                validEmail.style.display = 'none';
+                emailField.classList.remove('border-danger');
+                emailField.classList.add('border-success');
+            } else {
+                validEmail.style.display = 'block';
+                emailField.classList.remove('border-success');
+                emailField.classList.add('border-danger');
+            }
+
+            validateForm();
+        }
+
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const minLength = document.getElementById('min-length');
+            const number = document.getElementById('number');
+            const specialChar = document.getElementById('special-char');
+            const passwordMatchError = document.getElementById('password-match-error');
+            const passwordField = document.getElementById('password');
+            const confirmPasswordField = document.getElementById('confirmPassword');
+
+            let isPasswordValid = true;
+
+            if (password.length >= 8) {
+                minLength.classList.remove('text-danger');
+                minLength.classList.add('text-success');
+            } else {
+                minLength.classList.remove('text-success');
+                minLength.classList.add('text-danger');
+                isPasswordValid = false;
+            }
+
+            if (/\d/.test(password)) {
+                number.classList.remove('text-danger');
+                number.classList.add('text-success');
+            } else {
+                number.classList.remove('text-success');
+                number.classList.add('text-danger');
+                isPasswordValid = false;
+            }
+
+            if (/[!#$%^&*(),.?":{}|<>]/.test(password)) {
+                specialChar.classList.remove('text-danger');
+                specialChar.classList.add('text-success');
+            } else {
+                specialChar.classList.remove('text-success');
+                specialChar.classList.add('text-danger');
+                isPasswordValid = false;
+            }
+
+            if (password === confirmPassword && password.length > 0) {
+                passwordMatchError.style.display = 'none';
+                confirmPasswordField.classList.remove('border-danger');
+                confirmPasswordField.classList.add('border-success');
+            } else {
+                passwordMatchError.style.display = 'block';
+                confirmPasswordField.classList.remove('border-success');
+                confirmPasswordField.classList.add('border-danger');
+                isPasswordValid = false;
+            }
+            
+            if (isPasswordValid) {
+                passwordField.classList.remove('border-danger');
+                passwordField.classList.add('border-success');
+            } else {
+                passwordField.classList.remove('border-success');
+                passwordField.classList.add('border-danger');
+            }
+
+            validateForm();
+        }
+
+        function validateForm() {
+            const emailValid = document.getElementById('valid-email').style.display === 'none';
+            const passwordValid = document.getElementById('min-length').classList.contains('text-success') &&
+                document.getElementById('number').classList.contains('text-success') &&
+                document.getElementById('special-char').classList.contains('text-success');
+            const confirmPasswordValid = document.getElementById('password').value === document.getElementById('confirmPassword').value && document.getElementById('password').value.length > 0;
+            const registerButton = document.querySelector('button[type="submit"]');
+
+            registerButton.disabled = !(emailValid && passwordValid && confirmPasswordValid);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            validateEmail();
+            validatePassword();
+        });
+    </script>
+}

@@ -25,7 +25,7 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
             {
                 Success = false,
                 Message = "User already exists"
-            }, StatusCodes.Status400BadRequest, ct);
+            }, StatusCodes.Status409Conflict, ct);
             return;
         }
 
