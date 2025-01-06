@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using Shortify.Common.Contracts.Response;
 using Shortify.Common.Misc;
 
 namespace Shortify.WebUI.Pages;
 
-public class UrlsModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
+public class UrlsModel(ApiClient apiClient, JsonHelper jsonHelper, IOptions<WebSettings> options) : PageModel
 {
+    public string ApiUrl = options.Value.ApiUrl;
     public PagedResult<GetUrlResponse>? PagedResult { get; set; }
 
     public async Task OnGetAsync()

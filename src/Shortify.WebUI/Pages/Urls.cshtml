@@ -27,7 +27,10 @@
         {
             <tr>
                 <td>@url.OriginalLink</td>
-                <td>@url.ShortLink</td>
+                <td>@url.ShortLink <button onclick="copyToClipboard('@Model.ApiUrl/@url.ShortLink')"
+                                           class="btn btn-secondary">📋
+                    </button>
+                </td>
                 <td>@url.Visits</td>
                 @if (User.Claims.FirstOrDefault(c => c.Type == "role")?.Value == "admin")
                 {
@@ -50,4 +53,15 @@
 else
 {
     <p>No URLs found.</p>
+}
+
+@section Scripts {
+    <script>
+        function copyToClipboard(url) {
+            navigator.clipboard.writeText(url).then(() => {
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
 }
