@@ -3,12 +3,14 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 using Shortify.Common.Contracts.Requests;
+using Shortify.Common.Contracts.Response;
 using Shortify.Common.Misc;
 
 namespace Shortify.WebUI.Pages;
 
-public class IndexModel(ApiClient apiClient) : PageModel
+public class IndexModel(ApiClient apiClient, JsonHelper jsonHelper, IOptions<WebSettings> options) : PageModel
 {
     [BindProperty]
     [RegularExpression(@"^(https?:\/\/)?(www\.)?([a-zA-Z0-9\-]+)(\.[a-zA-Z]{2,})(\/[^\s]*)?$",
@@ -16,6 +18,10 @@ public class IndexModel(ApiClient apiClient) : PageModel
     public string OriginalUrl { get; set; } = string.Empty;
 
     [BindProperty] public string CustomShort { get; set; } = string.Empty;
+
+    [BindProperty] public string ShortenedUrl { get; set; } = string.Empty;
+
+    [BindProperty] public string ErrorMessage { get; set; } = string.Empty;
 
     public async Task OnPostShortAsync()
     {
@@ -31,11 +37,17 @@ public class IndexModel(ApiClient apiClient) : PageModel
 
         var response = await apiClient.PostAsync("urls", content, token);
         var responseContent = await response.Content.ReadAsStringAsync();
+        var responseObj = jsonHelper.Deserialize<BaseResponse>(responseContent);
 
-        if (response.IsSuccessStatusCode)
+        if (responseObj is { Success: true })
         {
-            OriginalUrl = string.Empty;
-            CustomShort = string.Empty;
+            var shortUrl = jsonHelper.Deserialize<AddUrlResponse>(responseContent);
+            if (shortUrl is not null)
+                ShortenedUrl = options.Value.ApiUrl + "/" + shortUrl.ShortLink;
+        }
+        else
+        {
+            ErrorMessage = responseObj?.Message ?? "An error occurred while shortening the URL.";
         }
     }
 }

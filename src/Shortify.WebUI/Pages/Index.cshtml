@@ -35,6 +35,25 @@
             <button type="submit" class="btn btn-primary" id="shortenButton" disabled>Shorten URL</button>
         </form>
     }
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger" role="alert">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ShortenedUrl))
+    {
+        <div class="alert alert-success" role="alert">
+            Your URL has been shortened successfully!
+            <div id="shortenedUrlContainer">
+                <p>Shortened URL: <span id="shortenedUrl">@Model.ShortenedUrl</span></p>
+                <button class="btn btn-secondary" onclick="copyToClipboard()">Copy to Clipboard</button>
+            </div>
+        </div>
+    }
+
 </div>
 
 @section Scripts {
@@ -44,17 +63,24 @@
             const urlError = document.getElementById('urlError');
             const shortenButton = document.getElementById('shortenButton');
 
-            // Simple regex for URL validation
             const urlPattern = /^(https?:\/\/)?([a-z0-9-]+\.)+[a-z]{2,}(:\d+)?(\/[^\s]*)?$/i;
             const isValid = urlPattern.test(urlInput);
 
             if (isValid) {
-                urlError.style.display = 'none'; // Hide error message
-                shortenButton.disabled = false; // Enable button
+                urlError.style.display = 'none';
+                shortenButton.disabled = false;
             } else {
-                urlError.style.display = 'block'; // Show error message
-                shortenButton.disabled = true; // Disable button
+                urlError.style.display = 'block';
+                shortenButton.disabled = true;
             }
+        }
+
+        function copyToClipboard() {
+            const shortenedUrl = document.getElementById('shortenedUrl').innerText;
+            navigator.clipboard.writeText(shortenedUrl).then(() => {
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
         }
     </script>
 }
