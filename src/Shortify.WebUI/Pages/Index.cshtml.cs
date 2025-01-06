@@ -29,6 +29,13 @@ public class IndexModel(ApiClient apiClient) : PageModel
         var json = JsonSerializer.Serialize(urlData);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-        await apiClient.PostAsync("urls", content, token);
+        var response = await apiClient.PostAsync("urls", content, token);
+        var responseContent = await response.Content.ReadAsStringAsync();
+
+        if (response.IsSuccessStatusCode)
+        {
+            OriginalUrl = string.Empty;
+            CustomShort = string.Empty;
+        }
     }
 }
