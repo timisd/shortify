@@ -7,12 +7,13 @@ using Shortify.Common.Models;
 
 namespace Shortify.Common.Misc;
 
-public class JwtTokenHelper(IOptions<GeneralSettings> conf)
+public class JwtTokenHelper(IOptions<ApiSettings> conf)
 {
     public string CreateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.UTF8.GetBytes(conf.Value.EncryptionKey);
+        var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("ApiSettings__EncryptionKey") ??
+                                         conf.Value.EncryptionKey);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([

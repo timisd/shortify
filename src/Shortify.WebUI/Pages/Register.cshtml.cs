@@ -9,7 +9,7 @@ using Shortify.Common.Misc;
 
 namespace Shortify.WebUI.Pages;
 
-public class RegisterModel(JsonHelper jsonHelper) : PageModel
+public class RegisterModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Email is required.")]
@@ -44,7 +44,7 @@ public class RegisterModel(JsonHelper jsonHelper) : PageModel
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
         using var client = new HttpClient();
-        var response = await client.PostAsync("http://localhost:5134/api/auth/register", content);
+        var response = await apiClient.PostAsync("auth/register", content);
         var responseContent = await response.Content.ReadAsStringAsync();
         var baseResponse = jsonHelper.Deserialize<BaseResponse>(responseContent);
 

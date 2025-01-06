@@ -43,7 +43,8 @@ public class IndexModel(ApiClient apiClient, JsonHelper jsonHelper, IOptions<Web
         {
             var shortUrl = jsonHelper.Deserialize<AddUrlResponse>(responseContent);
             if (shortUrl is not null)
-                ShortenedUrl = options.Value.ApiUrl + "/" + shortUrl.ShortLink;
+                ShortenedUrl = (Environment.GetEnvironmentVariable("WebSettings__ApiUrl") ?? options.Value.ApiUrl) +
+                               "/" + shortUrl.ShortLink;
         }
         else
         {

@@ -1,3 +1,6 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Shortify.Common.Misc;
 using Shortify.Common.Models;
 using Shortify.Persistence;
@@ -10,8 +13,9 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<GeneralSettings>(configuration.GetSection("GeneralSettings"));
+        services.Configure<ApiSettings>(configuration.GetSection("ApiSettings"));
         services.Configure<DatabaseSettings>(configuration.GetSection("DatabaseSettings"));
+
         return services;
     }
 
@@ -31,6 +35,31 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<JwtTokenHelper>();
         services.AddSingleton<UrlGenerator>();
         services.AddSingleton<JsonHelper>();
+
+        return services;
+    }
+
+    public static IServiceCollection AddAuth(this IServiceCollection services, ApiSettings settings)
+    {
+        services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(options =>
+        {
+            options.RequireHttpsMetadata = false;
+            options.SaveToken = true;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = "Shortify",
+                ValidAudience = "Shortify",
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.EncryptionKey))
+            };
+        });
+
         return services;
     }
 }

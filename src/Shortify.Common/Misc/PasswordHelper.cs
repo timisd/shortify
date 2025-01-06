@@ -5,7 +5,7 @@ using Shortify.Common.Models;
 
 namespace Shortify.Common.Misc;
 
-public class PasswordHelper(IOptions<GeneralSettings> config)
+public class PasswordHelper(IOptions<ApiSettings> config)
 {
     private readonly Random _random = new();
 
@@ -16,7 +16,9 @@ public class PasswordHelper(IOptions<GeneralSettings> config)
 
     public string ComputeSha256Hash(string rawData)
     {
-        var bytes = Encoding.UTF8.GetBytes(rawData + config.Value.EncryptionSalt);
+        var bytes = Encoding.UTF8.GetBytes(
+            rawData + (Environment.GetEnvironmentVariable("ApiSettings__EncryptionSalt") ??
+                       config.Value.EncryptionSalt));
         bytes = SHA256.HashData(bytes);
         return Convert.ToBase64String(bytes);
     }

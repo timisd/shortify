@@ -5,7 +5,7 @@
       "Microsoft.AspNetCore": "Warning"
     }
   },
-  "GeneralSettings": {
+  "ApiSettings": {
     "EncryptionKey": "custom_encryption_key",
     "EncryptionSalt": "custom_encryption_salt"
   },

@@ -1,15 +1,14 @@
 ﻿using System.Net.Http.Headers;
+using Microsoft.Extensions.Options;
 
-namespace Shortify.Common.Misc;
+namespace Shortify.WebUI;
 
-public class ApiClient(IHttpClientFactory clientFactory)
+public class ApiClient(IHttpClientFactory clientFactory, IOptions<WebSettings> options)
 {
-    private const string BaseApiUrl = "http://localhost:5134/api/";
-
     public async Task<HttpResponseMessage> GetAsync(string endpoint, string? token = null)
     {
         var client = clientFactory.CreateClient();
-        client.BaseAddress = new Uri(BaseApiUrl);
+        client.BaseAddress = new Uri(GetBaseApiUrl());
 
         if (token != null) client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -19,7 +18,7 @@ public class ApiClient(IHttpClientFactory clientFactory)
     public async Task<HttpResponseMessage> PostAsync(string endpoint, StringContent content, string? token = null)
     {
         var client = clientFactory.CreateClient();
-        client.BaseAddress = new Uri(BaseApiUrl);
+        client.BaseAddress = new Uri(GetBaseApiUrl());
 
         if (token != null) client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
@@ -29,10 +28,15 @@ public class ApiClient(IHttpClientFactory clientFactory)
     public async Task<HttpResponseMessage> DeleteAsync(string endpoint, string? token = null)
     {
         var client = clientFactory.CreateClient();
-        client.BaseAddress = new Uri(BaseApiUrl);
+        client.BaseAddress = new Uri(GetBaseApiUrl());
 
         if (token != null) client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         return await client.DeleteAsync(endpoint);
+    }
+
+    private string GetBaseApiUrl()
+    {
+        return (Environment.GetEnvironmentVariable("WebSettings__ApiUrl") ?? options.Value.ApiUrl) + "/api/";
     }
 }

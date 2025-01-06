@@ -26,7 +26,9 @@ public class UsersModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
     {
         var token = GetToken();
         if (!string.IsNullOrEmpty(token))
-            await apiClient.DeleteAsync($"users/{id}", token);
+        {
+            var response = await apiClient.DeleteAsync($"users/{id}", token);
+        }
 
         return RedirectToPage();
     }

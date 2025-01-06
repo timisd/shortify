@@ -8,7 +8,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options => { options.LoginPath = "/Login"; });
 
-builder.Services.Configure<WebSettings>(builder.Configuration.GetSection("GeneralSettings"));
+builder.Configuration.AddEnvironmentVariables();
+builder.Services.Configure<WebSettings>(builder.Configuration.GetSection("WebSettings"));
 
 builder.Services.AddSingleton<JsonHelper>();
 builder.Services.AddHttpClient();

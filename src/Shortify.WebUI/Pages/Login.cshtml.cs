@@ -48,9 +48,9 @@ public class LoginModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
         }
 
         var baseResponse = jsonHelper.Deserialize<BaseResponse>(responseContent);
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        if (response.StatusCode == HttpStatusCode.NotFound && baseResponse is not null)
         {
-            ModelState.AddModelError("Email", baseResponse!.Message ?? string.Empty);
+            ModelState.AddModelError("Email", baseResponse.Message ?? string.Empty);
             return Page();
         }
 

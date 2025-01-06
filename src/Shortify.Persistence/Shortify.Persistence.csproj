@@ -4,14 +4,16 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>   
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Shortify.Common\Shortify.Common.csproj"/>
     </ItemGroup>
 
-    <ItemGroup>
+    <!-- <ItemGroup>
         <Folder Include="Models\"/>
-    </ItemGroup>
+    </ItemGroup> -->
 
 </Project>

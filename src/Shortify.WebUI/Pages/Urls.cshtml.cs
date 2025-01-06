@@ -8,7 +8,7 @@ namespace Shortify.WebUI.Pages;
 
 public class UrlsModel(ApiClient apiClient, JsonHelper jsonHelper, IOptions<WebSettings> options) : PageModel
 {
-    public string ApiUrl = options.Value.ApiUrl;
+    public string ApiUrl = Environment.GetEnvironmentVariable("WebSettings__ApiUrl") ?? options.Value.ApiUrl;
     public PagedResult<GetUrlResponse>? PagedResult { get; set; }
 
     public async Task OnGetAsync()
@@ -28,7 +28,10 @@ public class UrlsModel(ApiClient apiClient, JsonHelper jsonHelper, IOptions<WebS
     {
         var token = GetToken();
         if (!string.IsNullOrEmpty(token))
-            await apiClient.DeleteAsync($"urls/{id}", token);
+        {
+            var response = await apiClient.DeleteAsync($"urls/{id}", token);
+        }
+
 
         return RedirectToPage();
     }

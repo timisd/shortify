@@ -1,6 +1,43 @@
 name: Shortify
 
 services:
+  api:
+    container_name: api
+    build:
+       context: ../src
+       dockerfile: Shortify.API/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DatabaseSettings__Host=${DB_HOST}
+      - DatabaseSettings__Port=${DB_PORT}
+      - DatabaseSettings__Database=${DB_NAME}
+      - DatabaseSettings__Username=${DB_USER}
+      - DatabaseSettings__Password=${DB_PASSWORD}
+      - ApiSettings__EncryptionKey=${ENCRYPTION_KEY}
+      - ApiSettings__EncryptionSalt=${ENCRYPTION_SALT}
+    networks:
+      - backend
+    depends_on:
+      - postgres
+
+  webui:
+    container_name: webui
+    build:
+      context: ../src
+      dockerfile: Shortify.WebUI/Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - WebSettings__ApiUrl=${API_URL}
+    networks:
+      - frontend
+      - backend
+    depends_on:
+      - api
+
   postgres:
     container_name: postgres
     image: postgres
@@ -13,6 +50,14 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
 
 volumes:
   postgres_data:
+
+networks:
+  frontend:
+    external: true
+  backend:
+    external: true

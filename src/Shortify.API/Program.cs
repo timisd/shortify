@@ -1,8 +1,5 @@
 using System.Diagnostics;
-using System.Text;
 using FastEndpoints;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Shortify.API.Extensions;
 using Shortify.Common.Models;
@@ -17,32 +14,16 @@ builder.Services.AddRepositories();
 
 builder.Services.AddFastEndpoints();
 
-var settings = builder.Configuration.GetSection("GeneralSettings").Get<GeneralSettings>();
+builder.Configuration.AddEnvironmentVariables();
+
+var settings = builder.Configuration.GetSection("ApiSettings").Get<ApiSettings>();
 if (settings == null)
 {
-    Debug.WriteLine("GeneralSettings not found");
+    Debug.WriteLine("ApiSettings not found");
     return;
 }
 
-builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = true,
-            ValidateIssuerSigningKey = true,
-            ValidIssuer = "Shortify",
-            ValidAudience = "Shortify",
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.EncryptionKey))
-        };
-    });
+builder.Services.AddAuth(settings);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
