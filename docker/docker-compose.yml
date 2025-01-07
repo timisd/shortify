@@ -56,6 +56,6 @@ volumes:
 
 networks:
   frontend:
-    external: true
+    # external: true
   backend:
-    external: true
+    # external: true
