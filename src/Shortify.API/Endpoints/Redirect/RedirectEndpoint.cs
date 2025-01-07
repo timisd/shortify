@@ -39,6 +39,6 @@ public class RedirectEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest
         if (!originalUrl.StartsWith("http://") && !originalUrl.StartsWith("https://"))
             originalUrl = "http://" + originalUrl;
 
-        await SendRedirectAsync(originalUrl, true, true);
+        await SendAsync(originalUrl, StatusCodes.Status200OK, ct);
     }
 }

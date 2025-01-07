@@ -23,6 +23,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapGet("{shortUrl}", async (string shortUrl, ApiClient apiClient) =>
+{
+    var response = await apiClient.RedirectAsync($"/{shortUrl}");
+
+    var fullUrl = (await response.Content.ReadAsStringAsync()).Trim('"');
+
+    return Results.Redirect(fullUrl);
+});
+
 app.UseHttpsRedirection();
 
 app.UseRouting();
