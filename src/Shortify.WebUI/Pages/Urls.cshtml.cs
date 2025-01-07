@@ -32,7 +32,6 @@ public class UrlsModel(ApiClient apiClient, JsonHelper jsonHelper, IOptions<WebS
             var response = await apiClient.DeleteAsync($"urls/{id}", token);
         }
 
-
         return RedirectToPage();
     }
 

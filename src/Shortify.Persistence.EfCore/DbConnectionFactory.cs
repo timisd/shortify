@@ -10,9 +10,7 @@ public class DbConnectionFactory(ILogger<DbConnectionFactory> logger, IOptions<D
     {
         var conString = GenerateConnectionString() ?? settings.Value.ConnectionString;
 
-        logger.LogError("Connection string: {0}", conString);
-
-        var connection = new NpgsqlConnection(GenerateConnectionString() ?? settings.Value.ConnectionString);
+        var connection = new NpgsqlConnection(conString);
         connection.Open();
         return connection;
     }

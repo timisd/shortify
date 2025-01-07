@@ -27,7 +27,7 @@
         {
             <tr>
                 <td>@url.OriginalLink</td>
-                <td>@url.ShortLink <button onclick="copyToClipboard('@Model.ApiUrl/@url.ShortLink')"
+                <td>@url.ShortLink <button onclick="copyToClipboard('@url.ShortLink')"
                                            class="btn btn-secondary">📋
                     </button>
                 </td>
@@ -57,8 +57,10 @@ else
 
 @section Scripts {
     <script>
-        function copyToClipboard(url) {
-            navigator.clipboard.writeText(url).then(() => {
+        function copyToClipboard(shortLink) {
+            const currentUrl = window.location.origin;
+            const fullUrl = `${currentUrl}/${shortLink}`;
+            navigator.clipboard.writeText(fullUrl).then(() => {
             }).catch(err => {
                 console.error('Failed to copy: ', err);
             });
