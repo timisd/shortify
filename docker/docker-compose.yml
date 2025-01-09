@@ -4,8 +4,6 @@ services:
     container_name: shortify-db
     image: postgres
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
@@ -17,10 +15,8 @@ services:
 
   api:
     container_name: shortify-api
-    image: timisd/shortify-api:0.1.2
+    image: timisd/shortify-api:0.2.0
     restart: unless-stopped
-    ports:
-      - "5001:5001"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - DatabaseSettings__Host=${DB_HOST}
@@ -40,10 +36,8 @@ services:
 
   webui:
     container_name: shortify-webui
-    image: timisd/shortify-webui:0.1.3
+    image: timisd/shortify-webui:0.2.0
     restart: unless-stopped
-    ports:
-      - "5000:5000"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - WebSettings__ApiUrl=${API_URL}
