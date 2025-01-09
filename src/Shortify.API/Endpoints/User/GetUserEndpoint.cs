@@ -8,7 +8,8 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.User;
 
-public class GetUserEndpoint(IUserRepository userRepo) : EndpointWithoutRequest<GetUserResponse>
+public class GetUserEndpoint(ILogger<GetUserEndpoint> logger, IUserRepository userRepo)
+    : EndpointWithoutRequest<GetUserResponse>
 {
     public override void Configure()
     {
@@ -22,6 +23,7 @@ public class GetUserEndpoint(IUserRepository userRepo) : EndpointWithoutRequest<
         var isGuid = Guid.TryParse(id, out var guid);
         if (!isGuid)
         {
+            logger.LogDebug("Invalid id: {Id}", id);
             await SendAsync(new GetUserResponse
             {
                 Success = false,
@@ -30,16 +32,23 @@ public class GetUserEndpoint(IUserRepository userRepo) : EndpointWithoutRequest<
             return;
         }
 
+        logger.LogDebug("Handling get user request for id: {Id}", id);
         var user = await userRepo.GetUserAsync(guid, ct);
         var userId = User.FindFirstValue(ClaimTypes.Sid);
         var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
         if (user == null || (user.Id.ToString() != userId && !isAdmin))
+        {
+            logger.LogDebug("User not found or user unauthorized for id: {Id}", id);
             await SendAsync(new GetUserResponse
             {
                 Success = false,
                 Message = "User not found"
             }, StatusCodes.Status404NotFound, ct);
+        }
         else
+        {
+            logger.LogDebug("User retrieved successfully for id: {Id}", id);
             await SendAsync(user.ToGetUserResponse(), StatusCodes.Status200OK, ct);
+        }
     }
 }

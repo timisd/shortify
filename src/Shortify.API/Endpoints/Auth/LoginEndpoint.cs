@@ -6,7 +6,7 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Auth;
 
-public class LoginEndpoint(IUserRepository userRepo, JwtTokenHelper jwtTokenHelper)
+public class LoginEndpoint(ILogger<LoginEndpoint> logger, IUserRepository userRepo, JwtTokenHelper jwtTokenHelper)
     : Endpoint<LoginRequest, LoginResponse>
 {
     public override void Configure()
@@ -17,9 +17,12 @@ public class LoginEndpoint(IUserRepository userRepo, JwtTokenHelper jwtTokenHelp
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Handling login request for email: {Email}", req.Email);
+
         var user = await userRepo.GetUserByLoginAsync(req.Email, req.Password, ct);
         if (user == null)
         {
+            logger.LogDebug("No user found with email: {Email}", req.Email);
             await SendAsync(new LoginResponse
             {
                 Success = false,
@@ -29,6 +32,7 @@ public class LoginEndpoint(IUserRepository userRepo, JwtTokenHelper jwtTokenHelp
         }
 
         var token = jwtTokenHelper.CreateToken(user);
+        logger.LogDebug("Token created for user: {Email}", req.Email);
         await SendAsync(new LoginResponse
         {
             Success = true,

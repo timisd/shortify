@@ -7,7 +7,7 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Auth;
 
-public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordHelper)
+public class RegisterEndpoint(ILogger<RegisterEndpoint> logger, IUserRepository userRepo, PasswordHelper passwordHelper)
     : Endpoint<RegisterRequest, RegisterResponse>
 {
     public override void Configure()
@@ -18,9 +18,12 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
 
     public override async Task HandleAsync(RegisterRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Handling register request for email: {Email}", req.Email);
+
         var user = await userRepo.GetUserByEmailAsync(req.Email, ct);
         if (user != null)
         {
+            logger.LogDebug("User already exists with email: {Email}", req.Email);
             await SendAsync(new RegisterResponse
             {
                 Success = false,
@@ -33,6 +36,7 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
         var result = await userRepo.AddUserAsync(newUser, ct);
         if (result == null)
         {
+            logger.LogDebug("User already exists with email: {Email}", req.Email);
             await SendAsync(new RegisterResponse
             {
                 Success = false,
@@ -41,6 +45,7 @@ public class RegisterEndpoint(IUserRepository userRepo, PasswordHelper passwordH
             return;
         }
 
+        logger.LogDebug("User registered successfully with email: {Email}", req.Email);
         await SendAsync(result.ToRegisterResponse(), StatusCodes.Status201Created, ct);
     }
 }

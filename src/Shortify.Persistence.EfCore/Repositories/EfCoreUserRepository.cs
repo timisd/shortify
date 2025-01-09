@@ -22,7 +22,7 @@ public class EfCoreUserRepository(
         }
         catch (DbUpdateException ex)
         {
-            logger.LogError(ex, "Error adding url");
+            logger.LogDebug(ex, "Error adding url");
             return null;
         }
     }
@@ -40,7 +40,7 @@ public class EfCoreUserRepository(
         }
         catch (DbUpdateException ex)
         {
-            logger.LogError(ex, "Error deleting url");
+            logger.LogDebug(ex, "Error deleting url");
             return null;
         }
     }
@@ -58,7 +58,7 @@ public class EfCoreUserRepository(
         }
         catch (DbUpdateException ex)
         {
-            logger.LogError(ex, "Could not get Url");
+            logger.LogDebug(ex, "Could not get Url");
             return null;
         }
     }

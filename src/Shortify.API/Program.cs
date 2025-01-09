@@ -28,6 +28,16 @@ if (settings == null)
 builder.Services.AddAuth(settings);
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebUI",
+        corsBuilder => corsBuilder
+            .WithOrigins(Environment.GetEnvironmentVariable("ApiSettings__FrontendUrl") ?? "http://localhost:5134")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
+
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

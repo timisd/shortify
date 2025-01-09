@@ -9,7 +9,7 @@ using Shortify.Common.Misc;
 
 namespace Shortify.WebUI.Pages;
 
-public class RegisterModel(ApiClient apiClient, JsonHelper jsonHelper) : PageModel
+public class RegisterModel(ILogger<RegisterModel> logger, ApiClient apiClient, JsonHelper jsonHelper) : PageModel
 {
     [BindProperty]
     [Required(ErrorMessage = "Email is required.")]

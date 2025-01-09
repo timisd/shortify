@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Shortify.Common.Models;
 
 namespace Shortify.Persistence.EfCore;
 
-public class AppDbContext(DbConnectionFactory dbConnectionFactory) : DbContext
+public class AppDbContext(ILogger<AppDbContext> logger, DbConnectionFactory dbConnectionFactory) : DbContext
 {
     public DbSet<Url> Urls { get; set; }
     public DbSet<User> Users { get; set; }
@@ -31,6 +32,7 @@ public class AppDbContext(DbConnectionFactory dbConnectionFactory) : DbContext
         {
             var connection = dbConnectionFactory.GetConnection();
             optionsBuilder.UseNpgsql(connection);
+            logger.LogDebug("Database connection to {Connection} configured.", connection.ToString());
         }
 
         base.OnConfiguring(optionsBuilder);

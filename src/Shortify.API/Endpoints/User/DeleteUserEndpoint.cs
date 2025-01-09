@@ -7,7 +7,7 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.User;
 
-public class DeleteUserEndpoint(IUserRepository userRepo) : EndpointWithoutRequest
+public class DeleteUserEndpoint(ILogger<DeleteUserEndpoint> logger, IUserRepository userRepo) : EndpointWithoutRequest
 {
     public override void Configure()
     {
@@ -21,6 +21,7 @@ public class DeleteUserEndpoint(IUserRepository userRepo) : EndpointWithoutReque
         var isGuid = Guid.TryParse(id, out var guid);
         if (!isGuid)
         {
+            logger.LogDebug("Invalid id: {Id}", id);
             await SendAsync(new GetUrlResponse
             {
                 Success = false,
@@ -29,17 +30,23 @@ public class DeleteUserEndpoint(IUserRepository userRepo) : EndpointWithoutReque
             return;
         }
 
-
+        logger.LogDebug("Handling delete user request for id: {Id}", id);
         var user = await userRepo.DeleteUserAsync(guid, ct);
         var userId = User.FindFirstValue(ClaimTypes.Sid);
         var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
         if (user == null || (user.Id.ToString() != userId && !isAdmin))
+        {
+            logger.LogDebug("User not found or user unauthorized for id: {Id}", id);
             await SendAsync(new GetUrlResponse
             {
                 Success = false,
                 Message = "User not found"
             }, StatusCodes.Status404NotFound, ct);
+        }
         else
+        {
+            logger.LogDebug("User deleted successfully for id: {Id}", id);
             await SendNoContentAsync(ct);
+        }
     }
 }

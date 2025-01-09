@@ -18,7 +18,7 @@ public class EfCoreUrlRepository(ILogger<EfCoreUrlRepository> logger, AppDbConte
         }
         catch (DbUpdateException ex)
         {
-            logger.LogError(ex, "Error adding url");
+            logger.LogDebug(ex, "Error adding url");
             return null;
         }
     }

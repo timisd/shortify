@@ -10,7 +10,8 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Url;
 
-public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) : Endpoint<AddUrlRequest, AddUrlResponse>
+public class AddUrlEndpoint(ILogger<AddUrlEndpoint> logger, IUrlRepository urlRepo, UrlGenerator urlGenerator)
+    : Endpoint<AddUrlRequest, AddUrlResponse>
 {
     public override void Configure()
     {
@@ -20,9 +21,12 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
     [Authorize]
     public override async Task HandleAsync(AddUrlRequest req, CancellationToken ct)
     {
+        logger.LogDebug("Handling add URL request for user: {UserId}", User.FindFirstValue(ClaimTypes.Sid));
+
         var userId = User.FindFirstValue(ClaimTypes.Sid);
         if (userId == null || !Guid.TryParse(userId, out var userGuid))
         {
+            logger.LogDebug("User not found or invalid user ID.");
             await SendAsync(new AddUrlResponse
             {
                 Success = false,
@@ -34,6 +38,7 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
         var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
         if (!isAdmin && req.ShortLink != null)
         {
+            logger.LogDebug("Non-admin user attempted to specify a custom short link.");
             await SendAsync(new AddUrlResponse
             {
                 Success = false,
@@ -46,12 +51,18 @@ public class AddUrlEndpoint(IUrlRepository urlRepo, UrlGenerator urlGenerator) :
             await urlRepo.AddUrlAsync(req.ToUrl(urlGenerator, User.FindFirstValue(ClaimTypes.Email)), ct);
 
         if (shortenedUrl == null)
+        {
+            logger.LogDebug("Error adding URL.");
             await SendAsync(new AddUrlResponse
             {
                 Success = false,
                 Message = "Error adding url"
             }, StatusCodes.Status400BadRequest, ct);
+        }
         else
+        {
+            logger.LogDebug("URL added successfully.");
             await SendAsync(shortenedUrl.ToAddUrlResponse(), StatusCodes.Status201Created, ct);
+        }
     }
 }

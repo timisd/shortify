@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Shortify.Common.Misc;
 using Shortify.WebUI;
 
@@ -14,6 +15,10 @@ builder.Services.Configure<WebSettings>(builder.Configuration.GetSection("WebSet
 builder.Services.AddSingleton<JsonHelper>();
 builder.Services.AddHttpClient();
 builder.Services.AddSingleton<ApiClient>();
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(@"/root/.aspnet/DataProtection-Keys"))
+    .SetApplicationName("shortify-webui");
 
 var app = builder.Build();
 

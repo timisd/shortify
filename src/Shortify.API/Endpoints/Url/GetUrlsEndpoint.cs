@@ -9,7 +9,8 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Url;
 
-public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedResult<GetUrlResponse>>
+public class GetUrlsEndpoint(ILogger<GetUrlsEndpoint> logger, IUrlRepository urlRepo)
+    : Endpoint<Filter, PagedResult<GetUrlResponse>>
 {
     public override void Configure()
     {
@@ -19,6 +20,8 @@ public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedRes
     [Authorize]
     public override async Task HandleAsync(Filter filter, CancellationToken ct)
     {
+        logger.LogDebug("Handling get URLs request with filter: {Filter}", filter);
+
         PagedResult<GetUrlResponse> result;
 
         var isDefaultFilter = filter is { StartPage: -1, ItemsPerPage: -1 } &&
@@ -27,6 +30,7 @@ public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedRes
         var userMail = User.FindFirstValue(ClaimTypes.Email);
         if (userMail == null)
         {
+            logger.LogDebug("User email not found.");
             await SendAsync(null!, StatusCodes.Status400BadRequest, ct);
             return;
         }
@@ -56,6 +60,7 @@ public class GetUrlsEndpoint(IUrlRepository urlRepo) : Endpoint<Filter, PagedRes
             result.Items = list.AsEnumerable();
         }
 
+        logger.LogDebug("URLs retrieved successfully.");
         await SendAsync(result, StatusCodes.Status200OK, ct);
     }
 }

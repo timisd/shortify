@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace Shortify.WebUI;
 
-public class ApiClient(IHttpClientFactory clientFactory, IOptions<WebSettings> options)
+public class ApiClient(ILogger<ApiClient> logger, IHttpClientFactory clientFactory, IOptions<WebSettings> options)
 {
     public async Task<HttpResponseMessage> GetAsync(string endpoint, string? token = null)
     {
@@ -47,6 +47,9 @@ public class ApiClient(IHttpClientFactory clientFactory, IOptions<WebSettings> o
 
     private string GetBaseApiUrl()
     {
-        return Environment.GetEnvironmentVariable("WebSettings__ApiUrl") ?? options.Value.ApiUrl;
+        var apiUrl = Environment.GetEnvironmentVariable("WebSettings__ApiUrl") ?? options.Value.ApiUrl;
+        logger.LogDebug("API URL: {ApiUrl}", apiUrl);
+
+        return apiUrl;
     }
 }

@@ -9,7 +9,8 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.User;
 
-public class GetUsersEndpoint(IUserRepository userRepo) : Endpoint<Filter, PagedResult<GetUserResponse>>
+public class GetUsersEndpoint(ILogger<GetUsersEndpoint> logger, IUserRepository userRepo)
+    : Endpoint<Filter, PagedResult<GetUserResponse>>
 {
     public override void Configure()
     {
@@ -19,6 +20,8 @@ public class GetUsersEndpoint(IUserRepository userRepo) : Endpoint<Filter, Paged
     [Authorize]
     public override async Task HandleAsync(Filter filter, CancellationToken ct)
     {
+        logger.LogDebug("Handling get users request with filter: {Filter}", filter);
+
         PagedResult<GetUserResponse> result;
 
         var isDefaultFilter = filter is { StartPage: -1, ItemsPerPage: -1 } &&
@@ -27,6 +30,7 @@ public class GetUsersEndpoint(IUserRepository userRepo) : Endpoint<Filter, Paged
         var userId = User.FindFirstValue(ClaimTypes.Sid);
         if (userId == null)
         {
+            logger.LogDebug("User ID not found.");
             await SendAsync(null!, StatusCodes.Status400BadRequest, ct);
             return;
         }
@@ -49,6 +53,7 @@ public class GetUsersEndpoint(IUserRepository userRepo) : Endpoint<Filter, Paged
             result = (await userRepo.GetUsersAsync(filter, ct)).ToGetUserResponsePagedResult();
         }
 
+        logger.LogDebug("Users retrieved successfully.");
         await SendAsync(result, StatusCodes.Status200OK, ct);
     }
 }

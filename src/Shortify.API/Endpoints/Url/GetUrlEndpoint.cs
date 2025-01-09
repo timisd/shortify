@@ -8,7 +8,8 @@ using Shortify.Persistence;
 
 namespace Shortify.API.Endpoints.Url;
 
-public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<GetUrlResponse>
+public class GetUrlEndpoint(ILogger<GetUrlEndpoint> logger, IUrlRepository urlRepo)
+    : EndpointWithoutRequest<GetUrlResponse>
 {
     public override void Configure()
     {
@@ -22,6 +23,7 @@ public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<Get
         var isGuid = Guid.TryParse(id, out var guid);
         if (!isGuid)
         {
+            logger.LogDebug("Invalid id: {Id}", id);
             await SendAsync(new GetUrlResponse
             {
                 Success = false,
@@ -30,16 +32,23 @@ public class GetUrlEndpoint(IUrlRepository urlRepo) : EndpointWithoutRequest<Get
             return;
         }
 
+        logger.LogDebug("Handling get URL request for id: {Id}", id);
         var url = await urlRepo.GetUrlAsync(guid, ct);
         var userMail = User.FindFirstValue(ClaimTypes.Email);
         var isAdmin = User.FindFirstValue(ClaimTypes.Role) == RolesEnum.Admin.ToFriendlyString();
         if (url == null || (url.UserMail != userMail && !isAdmin))
+        {
+            logger.LogDebug("Url not found or user unauthorized for id: {Id}", id);
             await SendAsync(new GetUrlResponse
             {
                 Success = false,
                 Message = "Url not found"
             }, StatusCodes.Status404NotFound, ct);
+        }
         else
+        {
+            logger.LogDebug("URL retrieved successfully for id: {Id}", id);
             await SendAsync(url.ToGetUrlResponse(), StatusCodes.Status200OK, ct);
+        }
     }
 }

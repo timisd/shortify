@@ -1,19 +1,28 @@
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /app
 
-COPY Shortify.Common/*.csproj ./Shortify.Common/
-COPY Shortify.API/*.csproj ./Shortify.API/
-COPY Shortify.WebUI/*.csproj ./Shortify.WebUI/
-RUN dotnet restore ./Shortify.WebUI/Shortify.WebUI.csproj
+# Set the working directory to /src
+WORKDIR /src
 
-RUN dotnet clean ./Shortify.WebUI/Shortify.WebUI.csproj
+# Copy the project files and restore dependencies
+COPY ../Shortify.Common/*.csproj Shortify.Common/
+COPY Shortify.WebUI/*.csproj Shortify.WebUI/
+RUN dotnet restore Shortify.WebUI/Shortify.WebUI.csproj
 
-COPY Shortify.Common ./Shortify.Common
-COPY Shortify.WebUI ./Shortify.WebUI
+# Copy the entire project and build it
+COPY ../Shortify.Common Shortify.Common/
+COPY Shortify.WebUI Shortify.WebUI/
+WORKDIR /src/Shortify.WebUI
+RUN dotnet build Shortify.WebUI.csproj -c Release -o /app/build
 
-RUN dotnet publish /app/Shortify.WebUI/Shortify.WebUI.csproj -c Release -o /app/out
+# Stage 2: Publish
+FROM build AS publish
+RUN dotnet publish Shortify.WebUI.csproj -c Release -o /app/publish
 
+# Stage 3: Run
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
+ENV ASPNETCORE_HTTP_PORTS=5000
+EXPOSE 5000
 WORKDIR /app
-COPY --from=build /app/out ./
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Shortify.WebUI.dll"]
